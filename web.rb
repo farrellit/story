@@ -48,9 +48,15 @@ get "/story.json" do
 		storyarray = Dir.new( "./public/story" ).entries.sort
 		storyarray.delete '.'
 		storyarray.delete '..'
+		storyarray.map! { |v| /\.html$/ =~ v ? v : nil }
+		storyarray.compact!
 		cache.add 'storyarray', storyarray = {"chapters"=>storyarray}.to_json
 	end
 	content_type "application/json"
 	storyarray
 end
 
+
+get "/*" do 
+	redirect "/main.html"
+end

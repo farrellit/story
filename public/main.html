@@ -21,11 +21,12 @@ function show_chapter( c ){
 	if(c > 0 && c <= document.chapters.length ){
 		$( '#disp').html( "<em>loading chapter "+c +"...</em>" )
 		$.get( "story/" + document.chapters[c-1] , function(d){
-			$( '#disp' ).html( d )
+			$( '#disp' ).html( d )  
 		})
+		$( "#chaptersel" ).val( c )
 	}
 	else{
-		alert( "No such chapter "+ c )
+		//alert( "No such chapter "+ c )
 		document.title_page
 	}
 
