@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<link rel='stylesheet' href='main.css' />
+<script type='text/javascript' src="http://code.jquery.com/jquery-2.0.3.min.js" >
+</script>
+<script type='text/javascript'>
+function load_chapters( c ) {
+	document.chapters = c.chapters
+	$("#chaptersel").html( "")
+	for( i in c.chapters ){
+		$("#chaptersel").append("<option value='"+(parseInt(i)+1)+"'>"+(parseInt(i)+1)+"</option>").show()
+	}
+	document.current_chapter = 0
+	document.title_page = $("#disp").html()
+}
+function show_chapter( c ){
+	if( c == undefined ) 
+		c = document.current_chapter 
+	if(c > 0 && c <= document.chapters.length ){
+		$( '#disp').html( "<em>loading chapter "+c +"...</em>" )
+		$.get( "story/" + document.chapters[c-1] , function(d){
+			$( '#disp' ).html( d )
+		})
+	}
+	else{
+		alert( "No such chapter "+ c )
+		document.title_page
+	}
+
+	if(document.current_chapter < document.chapters.length){ 
+		$("#next").attr('disabled', false)
+	}else{
+		$("#next").attr('disabled', true )
+	}
+	if( document.current_chapter > 1 ){ 
+		$("#prev").attr('disabled', null)
+	}
+	else{
+		$("#prev").attr('disabled', 'disabled')
+	}
+}
+function next_chapter() {
+	if( document.chapters.length > document.current_chapter ){
+		document.current_chapter += 1
+	}else{
+		alert(" no next chapter: " + document.chapters.length + " <= " + document.current_chapter )
+	}
+	show_chapter()
+}
+function prev_chapter() {
+	if( document.current_chapter > 1 )
+		document.current_chapter--
+	show_chapter()
+}
+$(document).ready( function(){
+	$.get( "/story.json", function(data){
+			//JSON.parse( data );
+			load_chapters( data )
+			show_chapter()
+	});
+});
+</script>
+</head>
+<body>
+<div class='main'>
+<div class='tbl'>
+	<div class='tr'>
+		<div class='td' id='disp'>
+		<h1>A Story</h1>	
+		</div>
+	</div>
+	</div>
+</div>
+</div<!-- main -->
+<div class='footer'>
+		<select onchange='show_chapter(this.value)' id='chaptersel' style='display: none'>
+		</select>
+		<button onclick="prev_chapter()" id='prev' >Previous</button>
+		<button  onclick="next_chapter()" id='next'>Next</button>
+</div>
+</body>
+</html>
